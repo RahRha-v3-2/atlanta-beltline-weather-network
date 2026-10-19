@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "beltline-telemetry"
+version = "0.1.0"
+description = "Early prototype for a proposed WeatherXM pilot along the Atlanta BeltLine."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+authors = [{ name = "Serenity Software Solutions LLC", email = "rodney.burns@s3-bi.tech" }]
+dependencies = [
+  "fastapi>=0.115",
+  "httpx>=0.27",
+  "psycopg[binary]>=3.2",
+  "pydantic>=2",
+  "uvicorn>=0.32",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+  "ruff>=0.6",
+]
+
+[project.scripts]
+beltline-ingest = "ingest.cli:main"
+beltline-api = "api.main:main"
+beltline-mcp = "mcp.server:main"
+
+[tool.setuptools.packages.find]
+include = ["ingest*", "api*", "mcp*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = [
+  "ignore:Using `httpx` with `starlette.testclient` is deprecated:starlette.exceptions.StarletteDeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["api", "ingest", "mcp"]

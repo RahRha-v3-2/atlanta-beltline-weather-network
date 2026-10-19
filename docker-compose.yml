@@ -1,0 +1,47 @@
+# Local prototype stack. The database starts empty.
+# No WeatherXM stations are deployed, and the API key is not baked into the image.
+
+services:
+  db:
+    # Official TimescaleDB image line for PostgreSQL 16. Local development only.
+    image: timescale/timescaledb:latest-pg16
+    environment:
+      POSTGRES_USER: beltline
+      POSTGRES_PASSWORD: beltline
+      POSTGRES_DB: beltline
+    ports:
+      - "5432:5432"
+    volumes:
+      - beltline-pg:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U beltline -d beltline"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://beltline:beltline@db:5432/beltline
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  ingest:
+    profiles: ["ingest"]
+    build: .
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://beltline:beltline@db:5432/beltline
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["python", "-m", "ingest", "pull", "--write"]
+    restart: "no"
+
+volumes:
+  beltline-pg:
