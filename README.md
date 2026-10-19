@@ -4,7 +4,7 @@
 
 Serenity Software Solutions LLC proposes a WeatherXM station cluster along the Atlanta BeltLine, plus an open pipeline that turns those stations into a public API, an MCP tool, and (later) a heat, flood, and wind dashboard. No station is deployed. There is no agreement with Atlanta Beltline, Inc., the City of Atlanta, or the BeltLine app.
 
-Phase 1 is a pilot pursuit on consenting private host sites next to the Eastside Trail, not on BeltLine property. The draft application has not been submitted from this repository.
+Phase 1 is a pilot pursuit on consenting private host sites next to the Eastside Trail, not on BeltLine property. The WeatherXM builder-grant draft has not been submitted from this repository. A Streamr Data Fund Quick Response application (Integration category, proposed $4,000) has been submitted for an open telemetry bridge. It has not been awarded. There is no agreement with Streamr.
 
 ## Problem
 
@@ -53,19 +53,20 @@ flowchart LR
   api[Public REST API]
   mcp[MCP server]
   dash[Dashboard / alerts]
-  streamr[Streamr public stream bridge]
+  bridge[Streamr bridge M1 in progress]
 
   stations --> wxm --> ingest --> db
   db --> api
   db --> mcp
   api --> dash
   mcp --> dash
-  ingest -.-> streamr
+  api --> bridge
+  wxm --> bridge
 ```
 
-The solid path is the intended design. In this repository the ingest client, schema, read API, and MCP tool exist and are tested. The dashboard is a placeholder. The Streamr bridge is optional and not enabled: no stream is published.
+The ingest client, schema, read API, and MCP tool are in the repo and tested. The Streamr bridge is M1 in progress: it can dry-run a WeatherXM adapter and log the proposed stream paths. No Streamr stream has been created, and nothing is published by default. The dashboard is still a placeholder.
 
-Stations are addressed by explicit WeatherXM station IDs. The ingest does not treat every station inside a map box as part of the pilot.
+Stations are addressed by explicit WeatherXM station IDs. The ingest and the bridge do not treat every station inside a map box as part of the pilot.
 
 99.9% uptime is a design target for solar-capable stations that keep reporting without grid power. It is not a measured figure.
 
@@ -84,15 +85,18 @@ Proposed timing from the grant draft, about 24 weeks from approval. Nothing belo
 
 M2 in this repo is the skeleton only: no public hostname and no live cluster. Full table: [docs/milestones.md](docs/milestones.md).
 
+The Streamr Data Fund application is a separate plan. Its M1 (weeks 1–3) is the bridge core and a WeatherXM stream. That core is in `bridge/` and is not a live stream. Later milestones add the other network adapters, BeltLine stream traffic, packaging, a dashboard, and the rest of the docs. Tutorial: [docs/streamr-bridge.md](docs/streamr-bridge.md).
+
 ## Repository layout
 
 ```text
 ingest/       WeatherXM Pro client and CLI
 api/          FastAPI read API
 mcp/          stdio MCP server (get_trail_conditions)
+bridge/       Streamr bridge, M1 in progress, dry-run by default
 dashboard/    placeholder for the M3 UI
 db/schema.sql empty Timescale schema
-docs/         architecture, milestones, data model
+docs/         architecture, milestones, data model, Streamr tutorial
 ```
 
 ## Run the prototype
@@ -152,7 +156,7 @@ WeatherXM observations remain under WeatherXM's terms when they are stored or re
 
 Air-quality readings, if this project later collects them on its own sensors, are intended for CC BY 4.0 and live in a separate table. None have been collected.
 
-A free public Streamr mirror of corridor data is part of the proposal. It is not configured.
+A public Streamr mirror is part of the proposal and is not live. The bridge checks the license of each source before a public publish. WeatherXM rows stay under WeatherXM's terms and are not published unless the operator sets `STREAMR_ALLOW_PUBLIC_WEATHERXM=1` after checking those terms. Other networks are stubs and are not published.
 
 ## Contact
 

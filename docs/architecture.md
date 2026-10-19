@@ -1,6 +1,6 @@
 # Architecture
 
-Status: proposal / early prototype. The diagram is the intended system. The repository contains the ingest client, the database schema, a read API, and an MCP tool. Stations, alerts, the dashboard, and the Streamr bridge are not running.
+Status: proposal / early prototype. The diagram is the intended system. The repository contains the ingest client, the database schema, a read API, an MCP tool, and a Streamr bridge that dry-runs. Stations, alerts, and the dashboard are not running. No Streamr stream has been created.
 
 ## System
 
@@ -13,19 +13,20 @@ flowchart LR
   api[Public REST API]
   mcp[MCP server]
   dash[Dashboard / alerts]
-  streamr[Streamr public stream bridge]
+  bridge[Streamr bridge M1 in progress]
 
   stations --> wxm --> ingest --> db
   db --> api
   db --> mcp
   api --> dash
   mcp --> dash
-  ingest -.-> streamr
+  api --> bridge
+  wxm --> bridge
 ```
 
 Phase 1 proposes about 5 WeatherXM stations on consenting private host sites next to the Eastside Trail. The stations join the WeatherXM network. This project does not operate a parallel sensor protocol.
 
-The dotted Streamr link is optional and disabled. Nothing is published to Streamr unless `STREAMR_STREAM_ID` is set later, and this prototype has no publisher.
+The Streamr bridge is M1 in progress. It reads the local API and, when configured, the WeatherXM Pro API, then logs a normalized message. The default is a dry run. No stream has been created, and public publish of WeatherXM data stays off until the operator sets a license flag. See [streamr-bridge.md](streamr-bridge.md) and [../bridge/README.md](../bridge/README.md).
 
 ## WeatherXM API
 
@@ -61,6 +62,7 @@ Station IDs are an explicit configuration (`WEATHERXM_STATION_IDS` or `--station
 | `db/schema.sql` | Empty Timescale schema. Observations are a hypertable on `observed_at`. |
 | `api/` | FastAPI: `/health`, `/stations`, `/observations/latest`. Reads the store. Does not call WeatherXM. |
 | `mcp/` | Stdio MCP server, protocol `2024-11-05`, tool `get_trail_conditions`. |
+| `bridge/` | TypeScript publisher. WeatherXM adapter works in dry-run. Other adapters are stubs. No live stream. |
 | `dashboard/` | Placeholder. No UI and no alert delivery. |
 
 With `DATABASE_URL` unset, the API and MCP server use an in-memory store that is empty on each process start. That keeps local review and CI independent of Postgres and of WeatherXM.
@@ -84,4 +86,5 @@ Air quality is a separate, proposed sensor class. The `air_quality_observations`
 - No deployment on the BeltLine, and no host-site list.
 - No agreement with Atlanta Beltline, Inc., the City of Atlanta, or the BeltLine app.
 - No seeded weather, no sample station map, and no node count beyond the proposed phase 1 cluster of about 5.
-- No Streamr stream, no alert sender, and no public hostname for this API.
+- No Streamr stream has been created. The bridge code does not count as a live publish.
+- No alert sender, and no public hostname for this API.
