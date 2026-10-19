@@ -8,7 +8,8 @@ This repository is an early prototype for a proposed pilot. Contributions should
 - Do not add station counts other than the phase 1 proposal of about 5 stations.
 - Do not seed fake observations, customers, logos, or uptime. 99.9% uptime is a design target only.
 - Do not tag a WeatherXM station as `eastside` or `westside` unless it is a known host site for this pilot.
-- Do not commit API keys, `.env`, wallet addresses, or host-site contact details.
+- Do not commit API keys, `.env`, `STREAMR_PRIVATE_KEY`, wallet addresses, or host-site contact details.
+- Do not claim a Streamr stream exists, or that the Streamr Data Fund application was awarded. Public publish stays off until that source's license has been checked.
 
 ## Local setup
 
@@ -50,7 +51,7 @@ The database password in `docker-compose.yml` is a local default, not a credenti
 
 ## Tests
 
-CI runs `ruff check` and `pytest` on Python 3.12. Tests use an in-memory store and a mocked HTTP client. They do not call WeatherXM and they do not require TimescaleDB.
+CI runs `ruff check` and `pytest` on Python 3.12, and `npm run lint`, `npm run typecheck`, and `npm test` in `bridge/` on Node 20. Tests use an in-memory store, a mocked HTTP client, and a mocked Streamr gateway. They do not call WeatherXM or Streamr and they do not require TimescaleDB.
 
 ## License
 

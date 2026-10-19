@@ -12,3 +12,4 @@ build/
 .coverage
 htmlcov/
 .python-version
+node_modules/

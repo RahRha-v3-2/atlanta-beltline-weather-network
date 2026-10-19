@@ -1,0 +1,31 @@
+{
+  "name": "@beltline/streamr-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Early prototype of an open DePIN telemetry bridge toward Streamr. No stream is live.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "node --import tsx --test test/*.test.ts",
+    "start": "node dist/cli.js",
+    "dev": "tsx src/cli.ts",
+    "create-streams": "tsx src/create-streams.ts"
+  },
+  "dependencies": {
+    "@streamr/sdk": "103.4.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@types/node": "^22.18.0",
+    "eslint": "^9.36.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.0"
+  }
+}

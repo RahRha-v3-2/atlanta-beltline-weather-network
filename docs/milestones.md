@@ -19,6 +19,18 @@ M1 is planned on private host sites adjacent to the Eastside Trail so the cluste
 
 M4's pilot proposal to Atlanta Beltline, Inc. is a future document. This repository is not that proposal, and it is not an integration with the BeltLine app.
 
+## Streamr Data Fund
+
+Separate from the WeatherXM draft above. A Quick Response application in the Integration category was submitted for the Open DePIN Telemetry Bridge. The proposed amount is $4,000. It has not been awarded. There is no agreement with Streamr.
+
+| # | Window | Scope in the application | This repository |
+| --- | --- | --- | --- |
+| M1 | Weeks 1–3 | Bridge core and a WeatherXM stream | Core, WeatherXM adapter, and dry-run publisher are in `bridge/`. No stream has been created and nothing is live. |
+| M2 | After M1 | Other adapters, BeltLine streams, Docker and Pi packaging | Stubs and a Dockerfile are started. Those adapters do not call GEODNET, Wingbits, Helium, or an air-quality sensor. |
+| M3 | After M2 | Dashboard and docs | A short tutorial is in `docs/streamr-bridge.md`. There is no dashboard. |
+
+GEODNET, if that adapter is built, is station health only. RTK correction data is out of scope.
+
 ## What "done" is not
 
 A merged copy of this prototype does not close M2. M2 in the draft also includes a running public API, quality filtering on a live cluster, and air-quality fusion. Those wait on M1 stations and on an explicit decision to host the service.

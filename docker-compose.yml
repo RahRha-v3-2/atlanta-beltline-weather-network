@@ -43,5 +43,19 @@ services:
     command: ["python", "-m", "ingest", "pull", "--write"]
     restart: "no"
 
+  bridge:
+    profiles: ["bridge"]
+    build:
+      context: ./bridge
+    environment:
+      STREAMR_DRY_RUN: ${STREAMR_DRY_RUN:-1}
+      STREAMR_POLL_INTERVAL_MS: ${STREAMR_POLL_INTERVAL_MS:-60000}
+      BELTLINE_API_URL: http://api:8000
+      WEATHERXM_SOURCE: local
+    depends_on:
+      api:
+        condition: service_started
+    restart: unless-stopped
+
 volumes:
   beltline-pg:

@@ -24,6 +24,9 @@ def test_readme_keeps_the_proposal_honest():
     for phrase in required:
         assert phrase in readme, phrase
     assert "millions of daily" not in readme.lower()
+    assert "M1 in progress" in readme
+    assert "has not been awarded" in readme
+    assert "No Streamr stream has been created" in readme
 
 
 def test_schema_creates_tables_and_does_not_seed_rows():
